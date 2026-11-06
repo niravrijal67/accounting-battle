@@ -1,0 +1,562 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Accounting Battle</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=Orbitron:wght@500;600;700;800&display=swap');
+:root{--bg:#050b19;--panel:#091a2d;--blue:#00baff;--cyan:#70e8ff;--gold:#ffc94a;--text:#eafaff;--muted:#91a9bc;--line:#168fc2;--green:#83ff35}
+*{box-sizing:border-box}
+body{margin:0;min-height:100vh;color:var(--text);font-family:Rajdhani,Arial,sans-serif;background:radial-gradient(ellipse at 50% 20%,#12324a 0%,transparent 48%),radial-gradient(ellipse at 80% 90%,#142344 0%,transparent 40%),linear-gradient(145deg,#030817,#07172a 55%,#090d20);background-attachment:fixed;overflow-x:hidden}
+body:before{content:"";position:fixed;inset:0;pointer-events:none;opacity:.15;background-image:linear-gradient(#5bdfff12 1px,transparent 1px),linear-gradient(90deg,#5bdfff12 1px,transparent 1px);background-size:42px 42px;mask-image:linear-gradient(to bottom,black,transparent 90%)}
+button,input,select{font:inherit}button{cursor:pointer}button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid var(--cyan);outline-offset:3px}.hidden{display:none!important}
+header{height:76px;padding:0 5%;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid #42d9ff40;background:#030817d9;backdrop-filter:blur(15px);position:relative;z-index:2}
+.logo{font-family:Orbitron,sans-serif;font-size:19px;font-weight:800;letter-spacing:1px;text-shadow:0 0 18px #00baff55}.logo span{color:var(--cyan)}.tag{font-family:Orbitron,sans-serif;font-size:10px;color:#8ac9df;letter-spacing:2px}
+main{max-width:1250px;margin:auto;padding:25px 22px 40px;position:relative;z-index:1}.hero{text-align:center;padding:24px 0 18px}.hero h1{font-family:Orbitron,sans-serif;font-size:clamp(32px,6vw,58px);line-height:1.15;margin:12px 0;background:linear-gradient(90deg,#fff,#69e5ff 55%,#ffc94a);background-clip:text;-webkit-background-clip:text;color:transparent;text-shadow:0 0 35px #00baff22}.hero p{color:var(--muted);line-height:1.5;font-size:18px}.pill{display:inline-block;border:1px solid #38cfff;border-radius:3px;padding:7px 14px;color:#8deaff;font-family:Orbitron,sans-serif;font-size:10px;letter-spacing:2px;background:#06223b;clip-path:polygon(0 0,92% 0,100% 28%,100% 100%,8% 100%,0 72%)}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}.card{background:linear-gradient(145deg,#0b2942ed,#071426f2);border:1px solid #197eaa;border-radius:4px;padding:23px;box-shadow:0 15px 45px #0008,inset 0 0 25px #00baff0a;position:relative}.card:before{content:"";position:absolute;left:0;top:0;width:42px;height:2px;background:var(--cyan);box-shadow:0 0 12px var(--cyan)}.card h2{margin-top:0;font-family:Orbitron,sans-serif;font-size:17px;letter-spacing:1px;color:#c8f5ff}
+label{display:block;font-size:13px;color:#b9d9e8;margin:15px 0 7px;letter-spacing:1px;font-weight:700}input,select{width:100%;padding:13px 14px;border-radius:3px;border:1px solid #236b8e;background:#041426;color:white;outline:none}input:focus,select:focus{border-color:var(--cyan);box-shadow:0 0 12px #00baff35}
+.btn{border:1px solid #4bdcff;border-radius:3px;padding:13px 18px;color:#001522;font-weight:800;letter-spacing:1px;font-family:Orbitron,sans-serif;font-size:11px;background:linear-gradient(110deg,#21bfff,#b3f5ff);transition:.2s;box-shadow:0 0 18px #0879eb40;clip-path:polygon(0 0,94% 0,100% 30%,100% 100%,6% 100%,0 70%)}.btn:hover{transform:translateY(-2px);filter:brightness(1.15);box-shadow:0 0 25px #00baff66}.btn.secondary{background:#08243a;color:#8ceaff;border:1px solid #287da5;box-shadow:none}.btn.full{width:100%;margin-top:14px}
+.features{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-top:20px}.features span{background:#08233a;border:1px solid #1c5978;padding:8px 11px;font-size:12px;color:#b8e8f5;letter-spacing:.5px}
+.arena-head{display:flex;align-items:end;justify-content:space-between;gap:12px;margin:15px 0 12px}.arena-head h2{font-family:Orbitron,sans-serif;font-size:18px;letter-spacing:2px;margin:0;color:#c7f5ff}.arena-head small{color:#7da9bd;letter-spacing:1px}.chapter-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin:12px 0 22px}.chapter-card{min-height:175px;text-align:left;position:relative;overflow:hidden;padding:15px 13px 13px;border:1px solid #1689b8;background:linear-gradient(160deg,#143a50,#071629 75%);color:#eafaff;clip-path:polygon(0 0,88% 0,100% 12%,100% 100%,12% 100%,0 88%);transition:.2s}.chapter-card:before{content:"";position:absolute;inset:0;background:radial-gradient(circle at 80% 20%,#2ccfff30,transparent 38%),linear-gradient(135deg,transparent 40%,#00baff12);pointer-events:none}.chapter-card:after{content:"";position:absolute;left:0;top:0;width:100%;height:2px;background:linear-gradient(90deg,transparent,#4ce1ff,transparent)}.chapter-card:hover{transform:translateY(-3px);border-color:#b2f4ff;box-shadow:0 0 22px #00baff33}.chapter-card.selected{border:2px solid #6feaff;background:linear-gradient(150deg,#145477,#08233c);box-shadow:0 0 24px #00baff55}.chapter-no{font-family:Orbitron,sans-serif;color:#5cdfff;font-size:10px;letter-spacing:2px;display:block;margin-bottom:12px}.chapter-card strong{display:block;font-size:17px;line-height:1.12;min-height:43px;position:relative}.chapter-card small{display:block;color:#9bb8c8;font-size:12px;line-height:1.2;margin-top:9px;position:relative}.chapter-card .select-mark{position:absolute;right:10px;bottom:8px;color:#75eaff;font-family:Orbitron,sans-serif;font-size:10px;letter-spacing:1px}
+.stats{display:flex;gap:10px;margin-bottom:20px}.stat{flex:1;background:linear-gradient(145deg,#0b2b45,#071629);border:1px solid #1c6387;border-radius:3px;padding:13px;text-align:center}.stat small{color:var(--muted);font-size:11px;letter-spacing:1px}.stat strong{display:block;font-family:Orbitron,sans-serif;font-size:21px;margin-top:5px;color:var(--cyan)}.progress{height:7px;border-radius:0;background:#183047;overflow:hidden;margin:15px 0}.progress div{height:100%;background:linear-gradient(90deg,#ffc52e,#00baff,#a4f5ff);transition:.3s}.question-card{padding:clamp(20px,4vw,35px)}.question{font-size:clamp(19px,3vw,26px);line-height:1.45;font-weight:700;margin:18px 0 25px}.answers{display:grid;grid-template-columns:1fr 1fr;gap:12px}.answer{padding:15px;text-align:left;border-radius:3px;border:1px solid #236487;background:#09243c;color:white;font-weight:700;line-height:1.4}.answer:hover:not(:disabled){background:#10466a;border-color:var(--cyan)}.answer.correct{background:#12583f;border-color:#38d89a}.answer.wrong{background:#6a2838;border-color:#ff7089}.answer:disabled{cursor:default}.feedback{margin-top:17px;padding:15px;border:1px solid #246687;background:#08233b;line-height:1.6}.timer{color:#ffd66e}.result{text-align:center;padding:30px 15px}.result .trophy{font-size:75px}.result h1{font-family:Orbitron,sans-serif;font-size:clamp(26px,5vw,42px)}footer{text-align:center;padding:25px;color:#668da5;font-size:12px;letter-spacing:2px}
+@media(max-width:900px){.chapter-grid{grid-template-columns:repeat(3,minmax(0,1fr))}}@media(max-width:650px){header{padding:0 15px}.tag{display:none}main{padding:15px 12px 30px}.grid{grid-template-columns:1fr}.chapter-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}.chapter-card{min-height:150px}.answers{grid-template-columns:1fr}.hero{padding-top:22px}.stats{gap:6px}.stat{padding:10px 5px}.stat strong{font-size:17px}.arena-head{align-items:start;flex-direction:column}}
+</style>
+</head>
+<body>
+
+<header>
+ <div class="logo">⚔ ACCOUNTING <span>BATTLE</span></div>
+ <div class="tag">THINK • CALCULATE • CONQUER</div>
+</header>
+
+<main>
+
+<!-- PAGE 1: PLAYER SETUP -->
+<section id="welcome">
+ <div class="hero">
+  <div class="pill">NEB CLASS 11 • FINANCIAL ACCOUNTING SIMULATION</div>
+  <h1>ACCOUNTING<br>BATTLE</h1>
+  <p>Enter your player name to begin your mission.</p>
+ </div>
+ <div class="grid">
+  <div class="card" style="max-width:620px;width:100%;margin:0 auto;grid-column:1/-1">
+   <h2>⚡ PLAYER IDENTIFICATION</h2>
+   <p style="color:var(--muted);font-size:14px">Create your player profile before entering the chapter arena.</p>
+   <label for="name1">YOUR NAME</label>
+   <input id="name1" placeholder="Enter your name..." maxlength="20">
+   <button class="btn full" id="continueToArena">CONTINUE TO CHAPTER ARENA →</button>
+  </div>
+ </div>
+</section>
+
+<!-- PAGE 2: CHAPTER ARENA -->
+<section id="arenaPage" class="hidden">
+ <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:14px">
+  <button class="btn secondary" id="backToProfile">← BACK</button>
+  <span class="pill">MISSION SELECT</span>
+ </div>
+ <div class="hero" style="padding-top:8px">
+  <div class="pill">SELECT YOUR DESTINATION</div>
+  <h1 style="font-size:clamp(27px,4vw,43px)">CHAPTER ARENAS</h1>
+  <p>Choose one NEB Class 11 chapter. Only its questions will appear.</p>
+ </div>
+ <div class="arena-head"><h2>AVAILABLE CHAPTERS</h2><small id="selectedChapterLabel">CURRENT ARENA: CHAPTER 01</small></div>
+ <div id="chapterCards" class="chapter-grid"></div>
+ <input type="hidden" id="chapterSelect" value="1">
+ <div class="grid">
+  <div class="card">
+   <h2>⚙ BATTLE CONFIGURATION</h2>
+   <label for="difficulty">SELECT DIFFICULTY</label>
+   <select id="difficulty"><option>Easy</option><option>Medium</option><option>Hard</option></select>
+   <div id="secondPlayer" class="hidden">
+    <label for="name2">PLAYER 2 NAME</label>
+    <input id="name2" placeholder="Enter second player's name..." maxlength="20">
+   </div>
+   <button class="btn full" id="solo">⚡ START SINGLE PLAYER</button>
+   <button class="btn secondary full" id="multi">👥 START TWO PLAYER BATTLE</button>
+  </div>
+  <div class="card">
+   <h2>◈ MISSION BRIEFING</h2>
+   <p style="color:var(--muted);line-height:1.7;font-size:15px">Select your chapter arena and difficulty. Your battle will contain questions from the selected NEB Class 11 chapter only.</p>
+   <div style="font-size:52px;text-align:center;margin:18px">◈ 📊 ⚔</div>
+   <h3 style="text-align:center;color:var(--cyan);font-family:Orbitron,sans-serif">READY FOR DEPLOYMENT?</h3>
+   <div class="features"><span>23 CHAPTERS</span><span>RANDOM QUESTIONS</span><span>SOLO MODE</span><span>2 PLAYER MODE</span><span>3 DIFFICULTIES</span></div>
+  </div>
+ </div>
+</section>
+
+<!-- GAME -->
+<section id="game" class="hidden">
+ <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:18px">
+  <button class="btn secondary" id="exit">← Exit</button>
+  <span class="pill" id="modeLabel">BATTLE MODE</span>
+ </div>
+
+ <div class="stats">
+  <div class="stat"><small id="label1">PLAYER 1</small><strong id="score1">0</strong></div>
+  <div class="stat"><small id="label2">PLAYER 2</small><strong id="score2">0</strong></div>
+  <div class="stat"><small>TIME</small><strong class="timer" id="timer">30</strong></div>
+ </div>
+
+ <div class="progress"><div id="progress"></div></div>
+
+ <div class="card question-card">
+  <div style="display:flex;justify-content:space-between;gap:10px">
+   <span class="pill" id="topic">ACCOUNTING</span>
+   <span style="color:var(--muted);font-size:13px" id="number">1 / 10</span>
+  </div>
+  <div id="turn" style="color:var(--cyan);margin-top:18px;font-weight:700"></div>
+  <div class="question" id="question">Loading question...</div>
+  <div class="answers" id="answers"></div>
+  <div id="feedback" class="feedback hidden" aria-live="polite"></div>
+  <button id="next" class="btn full hidden">NEXT QUESTION →</button>
+ </div>
+</section>
+
+<!-- RESULTS -->
+<section id="results" class="hidden">
+ <div class="card result">
+  <div class="trophy">🏆</div>
+  <div class="pill">BATTLE COMPLETED</div>
+  <h1 id="winner">CHAMPION!</h1>
+  <p style="color:var(--muted)">Here are your final results.</p>
+  <div class="stats">
+   <div class="stat"><small id="resultName1">PLAYER 1</small><strong id="resultScore1">0</strong></div>
+   <div class="stat"><small id="resultName2">PLAYER 2</small><strong id="resultScore2">0</strong></div>
+  </div>
+  <h2 id="accuracy"></h2>
+  <p style="color:var(--muted)" id="resultMessage"></p>
+  <button class="btn full" id="again">🔄 PLAY AGAIN</button>
+  <button class="btn secondary full" id="home">🏠 MAIN MENU</button>
+ </div>
+</section>
+
+</main>
+
+<footer>ACCOUNTING BATTLE © 2026 | LEARN • PLAY • WIN</footer>
+
+<script>
+
+// AUTOMATIC ACCOUNTING QUESTION GENERATOR
+
+const $ = id => document.getElementById(id);
+
+let players = [];
+let scores = [0,0];
+let current = 0;
+let questions = [];
+let multiplayer = false;
+let turn = 0;
+let timer = 30;
+let clock = null;
+let locked = false;
+let correctAnswers = 0;
+let questionIndex = 0;
+
+function random(min,max) {
+ return Math.floor(Math.random()*(max-min+1))+min;
+}
+
+function shuffle(array) {
+ return [...array].sort(()=>Math.random()-.5);
+}
+
+const chapterNames = [
+ 'Book Keeping and Accounting','General Accepted Accounting Principles (GAAP)','Double Entry System and Accounting Equation','Books of Original Entry - Journal','Subsidiary Books','Ledger Accounts','Cash Book','Trial Balance','Modern Banking System and Bank Reconciliation Statement','Journal Proper and Adjusted Trial Balance','Accounting Errors','Accounting for Fixed Assets','Reserve and Provisions','Capital and Revenue Concept','Final Accounts','Financial Statements','Accounting for Non Profit Organizations','Accounting for Incomplete Records','Government Accounting','Journal Voucher','Bank Cash Book','Budget Sheet','Expenditure Reports'
+];
+
+const chapterPools = {
+1:[
+ ()=>knowledge('What is bookkeeping?',['Systematic recording of financial transactions','Preparing advertisements','Hiring employees','Selling goods'],0,'Bookkeeping','Bookkeeping is the systematic recording of financial transactions.'),
+ ()=>knowledge('Which is a main objective of accounting?',['Providing financial information','Only recording cash','Designing products','Recruiting staff'],0,'Accounting','Accounting provides useful financial information to users.'),
+ ()=>knowledge('Which is a branch of accounting?',['Financial accounting','Mechanical accounting','Physical accounting','Social marketing'],0,'Branches of Accounting','Financial accounting is a major branch of accounting.'),
+ ()=>knowledge('Which activity comes first in the accounting process?',['Identifying transactions','Preparing final accounts','Closing ledger accounts','Preparing reports'],0,'Accounting Cycle','Transactions are identified before they are recorded.')],
+2:[
+ ()=>knowledge('What does GAAP stand for?',['Generally Accepted Accounting Principles','General Account Analysis Process','Global Accounting Application Policy','General Audit Assessment Plan'],0,'GAAP','GAAP means Generally Accepted Accounting Principles.'),
+ ()=>knowledge('Which is an accounting convention?',['Consistency','Recruitment','Production','Advertising'],0,'Accounting Conventions','Consistency is an important accounting convention.'),
+ ()=>knowledge('Which concept assumes that a business will continue operating?',['Going concern','Money measurement','Dual aspect','Matching'],0,'Accounting Concepts','The going concern concept assumes continuous business operation.'),
+ ()=>knowledge('The money measurement concept records events that can be:',['Expressed in monetary terms','Measured only by weight','Seen by customers','Predicted exactly'],0,'Accounting Concepts','Accounting records transactions measurable in money.')],
+3:[
+ ()=>knowledge('What is the basic accounting equation?',['Assets = Capital + Liabilities','Assets = Expenses + Sales','Capital = Assets + Liabilities','Liabilities = Assets + Capital'],0,'Accounting Equation','Assets = Capital + Liabilities.'),
+ ()=>knowledge('Every transaction affects how many accounts under double entry?',['At least two','Only one','Exactly one','None'],0,'Double Entry','Every transaction has a debit and a credit effect.'),
+ ()=>{let a=random(20000,100000),l=random(1000,a-1);return numerical(`Assets are Rs. ${a.toLocaleString()} and liabilities are Rs. ${l.toLocaleString()}. Find capital.`,a-l,'Accounting Equation')},
+ ()=>knowledge('The dual aspect concept is the basis of:',['Double entry system','Single entry system','Cash budget','Bank statement'],0,'Double Entry','The dual aspect concept supports the double entry system.')],
+4:[
+ ()=>knowledge('Which is the book of original entry?',['Ledger','Journal','Trial Balance','Balance Sheet'],1,'Journal','Journal is the book of original entry.'),
+ ()=>knowledge('Which account is debited when cash is received?',['Cash account','Sales account','Capital account','Creditor account'],0,'Debit and Credit','Cash received increases the cash account.'),
+ ()=>knowledge('A compound journal entry involves:',['More than two accounts','Only one account','No debit entry','No credit entry'],0,'Journal Entries','A compound entry involves more than two accounts.'),
+ ()=>knowledge('A bill of exchange is a:',['Written unconditional order to pay','Cash memo','Purchase return note','Ledger balance'],0,'Bill of Exchange','A bill of exchange is a written order to pay a specified sum.')],
+5:[
+ ()=>knowledge('Why are subsidiary books maintained?',['To classify similar transactions','To eliminate accounting','To calculate salary only','To avoid recording'],0,'Subsidiary Books','Subsidiary books classify similar transactions.'),
+ ()=>knowledge('Credit purchases of goods are recorded in:',['Purchase book','Sales book','Cash book','Journal proper'],0,'Purchase Book','Credit purchases of goods are recorded in the purchase book.'),
+ ()=>knowledge('Goods returned to suppliers are recorded in:',['Purchase return book','Sales book','Cash book','Ledger'],0,'Purchase Returns','Purchase returns are recorded in the purchase return book.'),
+ ()=>knowledge('Trade discount is generally deducted from:',['List price','Net profit','Capital','Bank balance'],0,'Discounts','Trade discount is deducted from the list price.')],
+6:[
+ ()=>knowledge('What is a ledger?',['Principal book of accounts','Book of original entry','Cash receipt','Financial statement'],0,'Ledger','Ledger contains classified accounts.'),
+ ()=>knowledge('Posting means transferring entries from:',['Journal to ledger','Ledger to journal','Balance sheet to journal','Invoice to cash book'],0,'Ledger Posting','Posting transfers journal entries into ledger accounts.'),
+ ()=>knowledge('Balancing a ledger account means:',['Finding the difference between debit and credit sides','Adding only debit side','Closing the business','Preparing invoices'],0,'Ledger Balancing','Balancing determines the difference between the two sides.'),
+ ()=>knowledge('The standard ledger format has:',['Debit and credit sides','Only debit side','Only credit side','Three cash columns'],0,'Ledger Format','A ledger account has debit and credit sides.')],
+7:[
+ ()=>knowledge('Which book records cash and bank transactions?',['Cash book','Purchase book','Sales book','Journal proper'],0,'Cash Book','Cash book records cash and bank transactions.'),
+ ()=>knowledge('Petty cash book records:',['Small routine expenses','Credit sales','Fixed assets','Capital'],0,'Petty Cash Book','Petty cash book records small routine expenses.'),
+ ()=>knowledge('A cash book serves as:',['Both journal and ledger','Only journal','Only ledger','Only balance sheet'],0,'Cash Book','Cash book has characteristics of both journal and ledger.'),
+ ()=>knowledge('Cash discount is allowed for:',['Prompt payment','Bulk purchase only','Buying fixed assets','Late payment'],0,'Cash Discount','Cash discount encourages prompt payment.')],
+8:[
+ ()=>knowledge('What is the main purpose of a trial balance?',['Check equality of debit and credit totals','Calculate tax','Record sales','Calculate depreciation'],0,'Trial Balance','A trial balance checks the equality of debit and credit totals.'),
+ ()=>knowledge('Trial balance is prepared from:',['Ledger balances','Invoices only','Bank statements only','Purchase orders'],0,'Trial Balance','Trial balance is prepared using ledger balances.'),
+ ()=>knowledge('Which is a method of preparing a trial balance?',['Balance method','Production method','Marketing method','Depreciation method'],0,'Trial Balance Methods','Balance method is one method of preparing a trial balance.'),
+ ()=>knowledge('Agreement of a trial balance proves:',['Arithmetical accuracy to some extent','No error exists','All transactions are recorded','Profit is earned'],0,'Trial Balance','Agreement does not guarantee that all errors are absent.')],
+9:[
+ ()=>knowledge('A cheque is:',['An order to a bank to pay money','A purchase invoice','A salary statement','A ledger account'],0,'Cheque','A cheque is a written order directing a bank to pay money.'),
+ ()=>knowledge('A passbook is maintained by:',['Bank','Supplier','Government office','Customer’s employer'],0,'Pass Book','A passbook is issued and maintained by the bank.'),
+ ()=>knowledge('A bank reconciliation statement compares:',['Cash book and bank statement','Sales and purchases','Assets and expenses','Capital and drawings'],0,'Bank Reconciliation','It reconciles the cash book bank balance with the bank statement.'),
+ ()=>knowledge('A cheque issued but not presented causes a difference because:',['Bank has not yet made the payment','Cash book is never updated','Cheque is cancelled automatically','It is a cash sale'],0,'Bank Reconciliation','The bank records the payment when the cheque is presented.')],
+10:[
+ ()=>knowledge('Journal proper records:',['Transactions not recorded in other subsidiary books','Only cash sales','Only credit purchases','Only bank deposits'],0,'Journal Proper','Journal proper records transactions not entered in special journals.'),
+ ()=>knowledge('An opening entry records:',['Opening assets and liabilities','Daily expenses','Only sales','Only drawings'],0,'Opening Entries','Opening entries bring forward assets and liabilities.'),
+ ()=>knowledge('Adjusted trial balance is prepared:',['After adjustments','Before recording transactions','Before journal entries','Before opening business'],0,'Adjusted Trial Balance','Adjusted trial balance is prepared after recording adjustments.'),
+ ()=>knowledge('A transfer entry is used to:',['Transfer an amount from one account to another','Record cash sales only','Open a bank account','Calculate depreciation'],0,'Transfer Entries','Transfer entries move amounts between relevant accounts.')],
+11:[
+ ()=>knowledge('What is an accounting error?',['A mistake in accounting records','A business profit','An asset purchase','A cash receipt'],0,'Accounting Errors','An accounting error is a mistake in recording or processing transactions.'),
+ ()=>knowledge('Which error may not be disclosed by a trial balance?',['Complete omission','Wrong totaling','One-sided posting','Unequal posting'],0,'Types of Errors','Complete omission does not affect trial balance totals.'),
+ ()=>knowledge('A suspense account may be opened when:',['Trial balance does not agree','Profit increases','Sales decrease','Cash increases'],0,'Suspense Account','A suspense account temporarily records the difference.'),
+ ()=>knowledge('Rectification of errors means:',['Correcting accounting mistakes','Preparing advertisements','Calculating sales price','Closing the bank'],0,'Rectification','Rectification means correcting errors in accounting records.')],
+12:[
+ ()=>knowledge('What is depreciation?',['Decrease in value of a fixed asset','Increase in capital','Increase in sales','Decrease in liabilities'],0,'Depreciation','Depreciation is the gradual reduction in the value of a fixed asset.'),
+ ()=>{let c=random(20000,100000),r=random(5,20);return numerical(`A machine costs Rs. ${c.toLocaleString()}. Calculate annual depreciation at ${r}% using straight-line method with zero residual value.`,c*r/100,'Straight Line Method')},
+ ()=>knowledge('Which method charges depreciation on book value?',['Written down value method','Straight line method','Cash method','Sales method'],0,'Written Down Value','Written down value method calculates depreciation on remaining book value.'),
+ ()=>knowledge('Which factor affects depreciation?',['Useful life of asset','Owner’s age','Number of customers','Business name'],0,'Depreciation Factors','Useful life is one factor affecting depreciation.')],
+13:[
+ ()=>knowledge('What is a reserve?',['Amount appropriated out of profit','Business loan','Cash sales','Daily expense'],0,'Reserve','A reserve is an amount appropriated out of profit.'),
+ ()=>knowledge('A provision is generally created for:',['Known liability or expected loss','Owner drawings','New investment only','Cash sales'],0,'Provision','Provision is created for known liabilities or expected losses.'),
+ ()=>knowledge('A provision is generally charged to:',['Profit and loss account','Drawings account','Sales account','Capital account'],0,'Provision','Provision is treated as a charge against profit.'),
+ ()=>knowledge('A reserve may strengthen the:',['Financial position of business','Daily sales invoice','Cash memo','Purchase order'],0,'Reserve','Reserves can strengthen the financial position of a business.')],
+14:[
+ ()=>knowledge('Purchase of machinery is generally:',['Capital expenditure','Revenue expenditure','Revenue receipt','Drawings'],0,'Capital Expenditure','Machinery is a long-term asset.'),
+ ()=>knowledge('Rent paid for office is:',['Revenue expenditure','Capital expenditure','Capital receipt','Asset'],0,'Revenue Expenditure','Office rent is a routine operating expense.'),
+ ()=>knowledge('Sale of old machinery is generally classified as:',['Capital receipt','Revenue receipt','Revenue expense','Drawings'],0,'Capital Receipt','Sale of a fixed asset is generally a capital receipt.'),
+ ()=>knowledge('Wages paid for installation of machinery are generally:',['Capital expenditure','Revenue expenditure','Revenue receipt','Drawings'],0,'Capital and Revenue','Installation cost is included in the cost of the asset.')],
+15:[
+ ()=>knowledge('Which account determines gross profit?',['Trading account','Cash account','Capital account','Bank account'],0,'Trading Account','Trading account determines gross profit or loss.'),
+ ()=>{let sales=random(30000,150000),cost=random(5000,sales-1);return numerical(`Sales are Rs. ${sales.toLocaleString()} and cost of goods sold is Rs. ${cost.toLocaleString()}. Find gross profit.`,sales-cost,'Gross Profit')},
+ ()=>knowledge('A balance sheet shows:',['Financial position','Only cash sales','Daily transactions','Only expenses'],0,'Balance Sheet','Balance sheet shows assets, liabilities and capital.'),
+ ()=>knowledge('Net profit is transferred to:',['Capital account','Purchases account','Drawings account','Sales return account'],0,'Final Accounts','Net profit increases the owner’s capital.')],
+16:[
+ ()=>knowledge('Financial statements communicate:',['Financial performance and position','Employee attendance','Product design','Marketing plans'],0,'Financial Statements','Financial statements communicate financial information.'),
+ ()=>knowledge('Which statement shows financial performance?',['Income statement','Cash invoice','Purchase order','Journal voucher'],0,'Income Statement','Income statement reports income and expenses.'),
+ ()=>knowledge('What does NFRS stand for?',['Nepal Financial Reporting Standards','National Finance Recording System','Nepal Fiscal Revenue Statement','National Financial Review Service'],0,'NFRS','NFRS means Nepal Financial Reporting Standards.'),
+ ()=>knowledge('A statement of financial position is also known as:',['Balance sheet','Cash book','Journal','Trial balance'],0,'Financial Position','The statement of financial position is also called a balance sheet.')],
+17:[
+ ()=>knowledge('A non-profit organization is primarily established for:',['Service or non-profit objectives','Trading for owner profit','Manufacturing only','Bank lending only'],0,'Non-Profit Organization','Non-profit organizations are established for service or other non-profit objectives.'),
+ ()=>knowledge('Which account records income and expenses of a non-profit organization?',['Income and expenditure account','Trading account','Purchase account','Sales account'],0,'Income and Expenditure','It determines surplus or deficit for the period.'),
+ ()=>knowledge('Receipt and payment account records:',['Cash and bank transactions','Only credit sales','Only depreciation','Only capital'],0,'Receipt and Payment','It records cash and bank receipts and payments.'),
+ ()=>knowledge('Excess of income over expenditure is called:',['Surplus','Deficit','Drawings','Liability'],0,'Non-Profit Accounts','Surplus occurs when income exceeds expenditure.')],
+18:[
+ ()=>knowledge('Single entry system is also known as:',['Incomplete records system','Double entry system','Cash system only','Bank system'],0,'Incomplete Records','Single entry is commonly associated with incomplete records.'),
+ ()=>knowledge('Statement of affairs helps determine:',['Capital','Sales tax','Depreciation rate','Bank interest'],0,'Statement of Affairs','Statement of affairs helps determine capital.'),
+ ()=>knowledge('Profit under incomplete records can be calculated using:',['Statement of affairs method','Trial balance only','Cash book only','Purchase book only'],0,'Profit Calculation','Profit can be calculated by comparing opening and closing capital with adjustments.'),
+ ()=>knowledge('Drawings are deducted when calculating:',['Closing capital','Gross sales','Purchases','Creditors'],0,'Incomplete Records','Drawings reduce the owner’s capital.')],
+19:[
+ ()=>knowledge('Government accounting deals with:',['Government financial transactions','Private family expenses','Personal shopping','Only business sales'],0,'Government Accounting','Government accounting records public financial transactions.'),
+ ()=>knowledge('What does TSA stand for?',['Treasury Single Account','Total Sales Account','Trial Statement Analysis','Tax Saving Arrangement'],0,'TSA System','TSA means Treasury Single Account.'),
+ ()=>knowledge('Government accounting mainly supports:',['Public financial accountability','Product advertising','Private ownership','Personal investment'],0,'Government Accounting','It supports accountability and control of public funds.'),
+ ()=>knowledge('Government accounting differs from commercial accounting because it focuses on:',['Public funds and budget control','Owner’s personal wealth','Only sales revenue','Shareholder dividends'],0,'Government Accounting','Government accounting emphasizes public accountability and budget control.')],
+20:[
+ ()=>knowledge('A journal voucher is a:',['Document supporting a journal entry','Bank cheque','Sales invoice only','Cash receipt only'],0,'Journal Voucher','A journal voucher supports the recording of journal transactions.'),
+ ()=>knowledge('A payment order is related to:',['Authorization of payment','Recording sales returns','Calculating depreciation','Preparing trading accounts'],0,'Payment Order','A payment order authorizes a payment.'),
+ ()=>knowledge('Journal vouchers are used for:',['Recording and supporting financial transactions','Advertising products','Recruiting employees','Preparing stock'],0,'Journal Voucher','Journal vouchers document financial transactions.'),
+ ()=>knowledge('A voucher provides:',['Documentary evidence','Owner drawings','Bank interest rate','Market demand'],0,'Journal Voucher','A voucher provides supporting evidence for a transaction.')],
+21:[
+ ()=>knowledge('A bank cash book records:',['Bank transactions','Only credit purchases','Only depreciation','Only drawings'],0,'Bank Cash Book','A bank cash book records bank-related transactions.'),
+ ()=>knowledge('Which item increases the bank balance in the cash book?',['Deposit into bank','Bank charges','Cheque payment','Interest charged'],0,'Bank Transactions','Deposits increase the bank balance.'),
+ ()=>knowledge('Bank charges are recorded as:',['Bank expense','Capital receipt','Asset purchase','Sales revenue'],0,'Bank Cash Book','Bank charges are an expense.'),
+ ()=>knowledge('A cheque deposited into bank is recorded on the:',['Debit side of bank column','Credit side of bank column','Debit side of purchases','Credit side of sales'],0,'Bank Cash Book','A deposit increases the bank balance and is debited.')],
+22:[
+ ()=>knowledge('A budget sheet shows:',['Budget allocation and expenditure','A sales invoice','A personal diary','A bank cheque'],0,'Budget Sheet','A budget sheet presents budget information and expenditure.'),
+ ()=>knowledge('A budget sheet helps in:',['Controlling expenditure','Increasing drawings','Recording personal expenses','Preparing sales invoices'],0,'Budget Sheet','Budget sheets help monitor and control expenditure.'),
+ ()=>knowledge('A budget sheet is generally prepared according to:',['Budget allocation','Personal preference','Market price only','Employee attendance'],0,'Budget Sheet','Budget sheets are based on allocated budgets.'),
+ ()=>knowledge('A budget helps an organization to:',['Plan and control spending','Avoid all accounting records','Eliminate liabilities','Stop preparing reports'],0,'Budget Sheet','A budget supports planning and control of spending.')],
+23:[
+ ()=>knowledge('An expenditure report shows:',['Details of expenditure','A list of customers','A sales advertisement','A bank cheque'],0,'Expenditure Reports','An expenditure report presents details of expenses.'),
+ ()=>knowledge('An expenditure statement helps to:',['Monitor spending','Record only sales','Calculate owner drawings','Prepare invoices'],0,'Expenditure Reports','It helps monitor and control expenditure.'),
+ ()=>knowledge('Monthly expenditure reports are prepared to:',['Review monthly spending','Calculate employee age','Record only assets','Determine selling prices'],0,'Monthly Expenditure','Monthly reports help review expenditure during a period.'),
+ ()=>knowledge('Expenditure reports support:',['Financial monitoring and accountability','Product design','Staff recruitment only','Advertising campaigns'],0,'Expenditure Reports','Reports support monitoring and accountability for spending.')]
+};
+
+function makeQuestion(level, chapter) {
+ const pool = chapterPools[Number(chapter)] || chapterPools[1];
+ // Easy, Medium and Hard all stay inside the selected chapter; harder levels
+ // use a wider random mix while preserving the existing difficulty selector.
+ let index = random(0, pool.length - 1);
+ if (level === 'Medium') index = random(0, pool.length - 1);
+ if (level === 'Hard') index = random(0, pool.length - 1);
+ return pool[index]();
+}
+
+function renderChapterCards(){
+ const holder=$('chapterCards');
+ holder.innerHTML='';
+ chapterNames.forEach((name,index)=>{
+  const number=index+1;
+  const card=document.createElement('button');
+  card.type='button';
+  card.className='chapter-card'+(number===1?' selected':'');
+  card.dataset.chapter=number;
+  card.innerHTML=`<span class="chapter-no">CHPT: ${String(number).padStart(2,'0')}</span><strong>${name}</strong><small>NEB CLASS 11 • FINANCIAL ACCOUNTING</small><span class="select-mark">${number===1?'SELECTED':'SELECT ARENA'}</span>`;
+  card.addEventListener('click',()=>selectChapter(number));
+  holder.appendChild(card);
+ });
+}
+function selectChapter(number){
+ $('chapterSelect').value=String(number);
+ $('selectedChapterLabel').textContent='CURRENT ARENA: CHAPTER '+String(number).padStart(2,'0');
+ document.querySelectorAll('.chapter-card').forEach(card=>{
+  const active=Number(card.dataset.chapter)===number;
+  card.classList.toggle('selected',active);
+  card.querySelector('.select-mark').textContent=active?'SELECTED':'SELECT ARENA';
+ });
+}
+renderChapterCards();
+
+function numerical(question,answer,topic) {
+ let values = new Set([answer]);
+ while(values.size<4) {
+  let variation=Math.max(10,Math.round(Math.abs(answer)*.2));
+  let wrong=Math.max(0,answer+random(-variation,variation));
+  if(wrong!==answer) values.add(wrong);
+ }
+ let choices=shuffle([...values]);
+ return {
+  question,topic,
+  options:choices.map(x=>'Rs. '+Math.round(x).toLocaleString()),
+  correct:choices.indexOf(answer),
+  explanation:'Correct calculation: Rs. '+Math.round(answer).toLocaleString()
+ };
+}
+
+function knowledge(question,options,correct,topic,explanation) {
+ let choices=shuffle(options.map((value,index)=>({value,index})));
+ return {
+  question,topic,
+  options:choices.map(x=>x.value),
+  correct:choices.findIndex(x=>x.index===correct),
+  explanation
+ };
+}
+
+// START GAME
+
+function startGame(twoPlayers) {
+ let name=$('name1').value.trim();
+ if(!name) {
+  alert('Please enter your name first!');
+  $('name1').focus();
+  return;
+ }
+
+ multiplayer=twoPlayers;
+ players=[name];
+
+ if(twoPlayers) {
+  let second=$('name2').value.trim();
+  if(!second) {
+   alert('Please enter Player 2 name!');
+   $('name2').focus();
+   return;
+  }
+  players.push(second);
+ } else {
+  players.push('Computer');
+ }
+
+ scores=[0,0];
+ current=0;
+ turn=0;
+ questionIndex=0;
+ correctAnswers=0;
+
+ let difficulty=$('difficulty').value;
+ let selectedChapter=$('chapterSelect').value;
+ questions=Array.from({length:10},()=>makeQuestion(difficulty,selectedChapter));
+
+ $('arenaPage').classList.add('hidden');
+ $('welcome').classList.add('hidden');
+ $('results').classList.add('hidden');
+ $('game').classList.remove('hidden');
+ $('label1').textContent=players[0];
+ $('label2').textContent=multiplayer?players[1]:'CPU';
+ $('modeLabel').textContent=(multiplayer?'TWO PLAYER BATTLE':'SOLO BATTLE')+' • CHAPTER '+String(selectedChapter).padStart(2,'0');
+
+ loadQuestion();
+}
+
+// DISPLAY QUESTION
+
+function loadQuestion() {
+ locked=false;
+ timer=30;
+ clearInterval(clock);
+
+ const q=questions[current];
+
+ $('number').textContent=(current+1)+' / 10';
+ $('topic').textContent=q.topic.toUpperCase();
+ $('question').textContent=q.question;
+ $('turn').textContent=multiplayer
+  ? players[turn]+"'s turn"
+  : "⚡ YOUR TURN";
+
+ $('score1').textContent=scores[0];
+ $('score2').textContent=scores[1];
+ $('progress').style.width=(current*10)+'%';
+ $('feedback').classList.add('hidden');
+ $('next').classList.add('hidden');
+
+ $('timer').textContent=multiplayer?'--':timer;
+
+ $('answers').innerHTML='';
+
+ q.options.forEach((answer,index)=>{
+  const button=document.createElement('button');
+  button.className='answer';
+  button.textContent=String.fromCharCode(65+index)+'. '+answer;
+  button.onclick=()=>checkAnswer(index);
+  $('answers').appendChild(button);
+ });
+
+ if(!multiplayer) {
+  clock=setInterval(()=>{
+   timer--;
+   $('timer').textContent=timer;
+   if(timer<=0) {
+    clearInterval(clock);
+    checkAnswer(-1);
+   }
+  },1000);
+ }
+}
+
+// CHECK ANSWER
+
+function checkAnswer(choice) {
+ if(locked)return;
+ locked=true;
+ clearInterval(clock);
+
+ const q=questions[current];
+ const player=multiplayer?turn:0;
+ const correct=choice===q.correct;
+
+ if(correct) {
+  scores[player]+=10;
+  if(!multiplayer)correctAnswers++;
+ }
+
+ [...$('answers').children].forEach((button,index)=>{
+  button.disabled=true;
+  if(index===q.correct)button.classList.add('correct');
+  else if(index===choice)button.classList.add('wrong');
+ });
+
+ $('score1').textContent=scores[0];
+ $('score2').textContent=scores[1];
+
+ $('feedback').classList.remove('hidden');
+ $('feedback').innerHTML=
+  `<strong style="color:${correct?'#50e5a4':'#ff8295'}">
+  ${correct?'✓ CORRECT! +10 POINTS':choice===-1?'TIME UP!':'✕ INCORRECT!'}
+  </strong><br>${q.explanation}`;
+
+ if(multiplayer)turn=1-turn;
+
+ $('next').classList.remove('hidden');
+ $('next').textContent=current===9?'VIEW RESULTS →':'NEXT QUESTION →';
+}
+
+// NEXT QUESTION
+
+function nextQuestion() {
+ current++;
+ if(current>=questions.length) {
+  finishGame();
+ } else {
+  loadQuestion();
+ }
+}
+
+// RESULTS
+
+function finishGame() {
+ clearInterval(clock);
+ $('game').classList.add('hidden');
+ $('results').classList.remove('hidden');
+ $('progress').style.width='100%';
+
+ $('resultName1').textContent=players[0];
+ $('resultName2').textContent=multiplayer?players[1]:'CPU';
+ $('resultScore1').textContent=scores[0];
+ $('resultScore2').textContent=multiplayer?scores[1]:'—';
+
+ if(multiplayer) {
+  $('winner').textContent=
+   scores[0]===scores[1]?'IT IS A DRAW!':
+   (scores[0]>scores[1]?players[0]:players[1])+' WINS!';
+  $('accuracy').textContent='🏆 '+Math.max(scores[0],scores[1])+' POINTS';
+  $('resultMessage').textContent='Amazing battle! Thanks for playing.';
+ } else {
+  $('winner').textContent='BATTLE COMPLETE!';
+  $('accuracy').textContent='⭐ '+scores[0]+' / 100 POINTS';
+  $('resultMessage').textContent=
+   'You answered '+correctAnswers+' out of 10 questions correctly.';
+ }
+}
+
+// NAVIGATION
+
+$('solo').onclick=()=>startGame(false);
+$('multi').onclick=()=>{
+ if($('secondPlayer').classList.contains('hidden')){
+  $('secondPlayer').classList.remove('hidden');
+  $('name2').focus();
+  return;
+ }
+ startGame(true);
+};
+
+$('next').onclick=nextQuestion;
+
+$('exit').onclick=()=>{
+ clearInterval(clock);
+ $('game').classList.add('hidden');
+ $('arenaPage').classList.remove('hidden');
+};
+
+$('again').onclick=()=>startGame(multiplayer);
+
+$('home').onclick=()=>{
+ $('results').classList.add('hidden');
+ $('arenaPage').classList.add('hidden');
+ $('welcome').classList.remove('hidden');
+};
+
+$('continueToArena').onclick=()=>{
+ const name=$('name1').value.trim();
+ if(!name){alert('Please enter your name first!');$('name1').focus();return;}
+ $('welcome').classList.add('hidden');
+ $('arenaPage').classList.remove('hidden');
+};
+
+$('backToProfile').onclick=()=>{
+ $('arenaPage').classList.add('hidden');
+ $('welcome').classList.remove('hidden');
+};
+
+$('solo').addEventListener('click',()=>{
+ $('secondPlayer').classList.add('hidden');
+});
+
+</script>
+</body>
+</html>
